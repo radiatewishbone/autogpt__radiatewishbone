@@ -1,4 +1,4 @@
-# autogpt_gotty
+# autogpt_radiatewishbone
 https://github.com/Significant-Gravitas/Auto-GPT
 
 Uses the Auto-GPT repo to install stable Auto-GPT. Also includes gotty for a web based terminal.
