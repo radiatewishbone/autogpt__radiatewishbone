@@ -1,19 +1,19 @@
 #version7
-ARG GOTTY_VERSION=v1.5.0
+ARG RADIATEWISHBONE_VERSION=v1.5.0
 
 # Some parts copied from https://github.com/claytondukes/autogpt-docker/blob/main/Dockerfile and https://github.com/Significant-Gravitas/Auto-GPT/blob/master/Dockerfile
 FROM debian:stable AS builder
 
-ARG GOTTY_VERSION
+ARG RADIATEWISHBONE_VERSION
 
 WORKDIR /build
 
-#grab gotty
-ADD https://github.com/sorenisanerd/gotty/releases/download/${GOTTY_VERSION}/gotty_${GOTTY_VERSION}_linux_arm64.tar.gz gotty-aarch64.tar.gz
-ADD https://github.com/sorenisanerd/gotty/releases/download/${GOTTY_VERSION}/gotty_${GOTTY_VERSION}_linux_amd64.tar.gz gotty-x86_64.tar.gz
+#grab radiatewishbone
+ADD https://github.com/sorenisanerd/radiatewishbone/releases/download/${RADIATEWISHBONE_VERSION}/radiatewishbone_${{RADIATEWISHBONE_VERSION}_linux_arm64.tar.gz radiatewishbone-aarch64.tar.gz
+ADD https://github.com/sorenisanerd/radiatewishbone/releases/download/${RADIATEWISHBONE_VERSION}/radiatewishbone_${{RADIATEWISHBONE_VERSION}_linux_amd64.tar.gz radiatewishbone-x86_64.tar.gz
 
-#unzip gotty
-RUN tar -xzvf "gotty-$(uname -m).tar.gz"
+#unzip radiatewishbone
+RUN tar -xzvf "radiatewishbone-$(uname -m).tar.gz"
 
 #install git for builder
 RUN apt-get -y update
@@ -28,8 +28,8 @@ RUN git clone -b stable https://github.com/Significant-Gravitas/Auto-GPT.git
 # Use an official Python base image from the Docker Hub
 FROM python:3.10-slim
 
-#Copy gotty from builder
-COPY --chmod=+x --from=builder /build/gotty /bin/gotty
+#Copy radiatewishbone from builder
+COPY --chmod=+x --from=builder /build/radiatewishbone /bin/radiatewishbone
 
 # Install Firefox / Chromium
 RUN apt-get update && apt-get install -y \
@@ -62,11 +62,11 @@ RUN pip install --upgrade pip && \
 WORKDIR /app
 COPY --from=builder /build/Auto-GPT/ /app
 RUN curl -L -o ./plugins/Auto-GPT-Plugins.zip https://github.com/Significant-Gravitas/Auto-GPT-Plugins/archive/refs/heads/master.zip
-RUN wget https://raw.githubusercontent.com/ther3zz/autogpt_gotty/main/plugins_config.yaml
+RUN wget https://raw.githubusercontent.com/ther3zz/autogpt_radiatewishbone/main/plugins_config.yaml
 
 EXPOSE 8080
 
 
 # Set the entrypoint
 WORKDIR /app
-CMD ["gotty", "--port", "8080", "--permit-write", "--title-format", "AutoGPT Terminal", "bash", "-c", "python -m autogpt --install-plugin-deps ${COMMAND_LINE_PARAMS}"]
+CMD ["radiatewishbone", "--port", "8080", "--permit-write", "--title-format", "AutoGPT Terminal", "bash", "-c", "python -m autogpt --install-plugin-deps ${COMMAND_LINE_PARAMS}"]
